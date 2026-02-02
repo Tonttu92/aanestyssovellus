@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Äänestyssovellus</title>
+    <link rel="stylesheet" href="tyylit.css">
+</head>
+<body> 
+    <header>
+        <h1>Äänestyssovellus</h1>
+    </header>
+
+    <!-- KIRJAUDU SISÄÄN -->
+    <div id="loginPage">
+        <h2>Kirjaudu sisään</h2>
+        <form id="loginForm">
+            <label for="username">Käyttäjätunnus:</label><br>
+            <input type="text" id="username" required><br>
+            <label for="password">Salasana:</label><br>
+            <input type="password" id="password" required><br><br>
+            <input type="submit" value="Kirjaudu">
+        </form>
+        <p>Luo tili <a href="#" id="registerLink">Rekisteröidy</a></p>
+    </div>
+
+    <!-- REKISTERÖIDY -->
+    <div id="registerPage" style="display:none;">
+        <h2>Rekisteröidy</h2>
+        <form id="registerForm">
+            <label for="newUsername">Käyttäjätunnus:</label><br>
+            <input type="text" id="newUsername" required><br>
+            <label for="newPassword">Salasana:</label><br>
+            <input type="password" id="newPassword" required><br><br>
+            <label for="role">Valitse rooli:</label><br>
+            <select id="role">
+                <option value="user">Käyttäjä</option>
+                <option value="admin">Ylläpitäjä</option>
+            </select><br><br>
+            <input type="submit" value="Rekisteröidy">
+        </form>
+         <p>Onko sinulla jo tili? <a href="#" id="loginLink">Kirjaudu</a></p>
+    </div>
+
+    <!-- PÄÄSIVU -->
+    <div id="mainPage" style="display:none;">
+        <h2>Tervetuloa, <span id="currentUser"></span>!</h2>
+        <button id="logoutButton">Kirjaudu ulos</button>
+
+        <hr>
+
+        <h3>Luo uusi äänestys</h3>
+        <form id="pollForm">
+            <label for="pollQuestion">Kysymys:</label><br>
+            <input type="text" id="pollQuestion" placeholder="Esim. Mikä on paras väri?" required><br><br>
+            
+            <label for="pollOptions">Vastausvaihtoehdot (erota pilkulla):</label><br>
+            <input type="text" id="pollOptions" placeholder="Esim. Punainen, Sininen, Vihreä" required><br><br>
+            
+            <button type="submit">Luo äänestys</button>
+        </form>
+
+        <hr>
+
+        <h3>Aktiiviset äänestykset</h3>
+        <div id="pollsContainer">
+            <!-- Äänestykset ilmestyvät tänne JavaScriptillä -->
+        </div>
+    </div>
+
+     <script src="main.js"></script>
+</body>
+</html>
