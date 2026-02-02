@@ -6,12 +6,12 @@
     <title>Äänestyssovellus</title>
     <link rel="stylesheet" href="tyylit.css">
 </head>
-<body> 
+<body>
     <header>
         <h1>Äänestyssovellus</h1>
     </header>
 
-    <!-- KIRJAUDU SISÄÄN -->
+    <!-- KIRJAUTUMISSIVU -->
     <div id="loginPage">
         <h2>Kirjaudu sisään</h2>
         <form id="loginForm">
@@ -21,10 +21,10 @@
             <input type="password" id="password" required><br><br>
             <input type="submit" value="Kirjaudu">
         </form>
-        <p>Luo tili <a href="#" id="registerLink">Rekisteröidy</a></p>
+        <p>Eikö sinulla ole tiliä? <a href="#" id="registerLink">Rekisteröidy tästä</a></p>
     </div>
 
-    <!-- REKISTERÖIDY -->
+    <!-- REKISTERÖITYMISSIVU -->
     <div id="registerPage" style="display:none;">
         <h2>Rekisteröidy</h2>
         <form id="registerForm">
@@ -35,39 +35,43 @@
             <label for="role">Valitse rooli:</label><br>
             <select id="role">
                 <option value="user">Käyttäjä</option>
-                <option value="admin">Ylläpitäjä</option>
+                <option value="admin">Ylläpitäjä (Admin)</option>
             </select><br><br>
             <input type="submit" value="Rekisteröidy">
         </form>
-         <p>Onko sinulla jo tili? <a href="#" id="loginLink">Kirjaudu</a></p>
+        <p>Onko sinulla jo tili? <a href="#" id="loginLink">Kirjaudu sisään</a></p>
     </div>
 
     <!-- PÄÄSIVU -->
     <div id="mainPage" style="display:none;">
-        <h2>Tervetuloa, <span id="currentUser"></span>!</h2>
-        <button id="logoutButton">Kirjaudu ulos</button>
+        <div class="user-info">
+            <h2>Tervetuloa, <span id="currentUser"></span>!</h2>
+            <button id="logoutButton">Kirjaudu ulos</button>
+        </div>
 
-        <hr>
-
-        <h3>Luo uusi äänestys</h3>
-        <form id="pollForm">
-            <label for="pollQuestion">Kysymys:</label><br>
-            <input type="text" id="pollQuestion" placeholder="Esim. Mikä on paras väri?" required><br><br>
-            
-            <label for="pollOptions">Vastausvaihtoehdot (erota pilkulla):</label><br>
-            <input type="text" id="pollOptions" placeholder="Esim. Punainen, Sininen, Vihreä" required><br><br>
-            
-            <button type="submit">Luo äänestys</button>
-        </form>
+        <!-- VAIN ADMINILLE -->
+        <div id="adminTools" style="display:none;">
+            <hr>
+            <h3>Luo uusi äänestys</h3>
+            <form id="pollForm">
+                <label for="pollQuestion">Kysymys:</label><br>
+                <input type="text" id="pollQuestion" placeholder="Esim. Mikä on paras vuodenaika?" required><br><br>
+                
+                <label for="pollOptions">Vastausvaihtoehdot (erota pilkulla):</label><br>
+                <input type="text" id="pollOptions" placeholder="Esim. Kevät, Kesä, Syksy, Talvi" required><br><br>
+                
+                <button type="submit" class="btn-save">Luo äänestys</button>
+            </form>
+        </div>
 
         <hr>
 
         <h3>Aktiiviset äänestykset</h3>
         <div id="pollsContainer">
-            <!-- Äänestykset ilmestyvät tänne JavaScriptillä -->
+            
         </div>
     </div>
 
-     <script src="main.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

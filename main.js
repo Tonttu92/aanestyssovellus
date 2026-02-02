@@ -53,18 +53,37 @@ function showRegisterPage() {
     document.getElementById('mainPage').style.display = 'none';
 }
 
+// Näytetään luontilomake vain ylläpitäjälle
 function showMainPage() {
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('registerPage').style.display = 'none';
     document.getElementById('mainPage').style.display = 'block';
+
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     document.getElementById('currentUser').textContent = currentUser.username;
+
+    // Haetaan lomake-elementti (lisätty otsikko ja lomake kääreeseen helppoa piilotusta varten)
+    const adminTools = document.getElementById('adminTools');
+    if (currentUser.role === 'admin') {
+        adminTools.style.display = 'block';
+    } else {
+        adminTools.style.display = 'none';
+    }
+
     loadPolls();
 }
 
 // --- ÄÄNESTYKSEN LUOMINEN ---
 document.getElementById('pollForm').addEventListener('submit', function (e) {
     e.preventDefault();
+    
+    // Turvatarkistus: Varmistetaan vielä kooditasolla että käyttäjä on admin
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser.role !== 'admin') {
+        alert("Vain ylläpitäjät voivat luoda äänestyksiä!");
+        return;
+    }
+
     const question = document.getElementById('pollQuestion').value;
     const optionsInput = document.getElementById('pollOptions').value;
 
@@ -79,7 +98,6 @@ document.getElementById('pollForm').addEventListener('submit', function (e) {
     }
 
     let polls = JSON.parse(localStorage.getItem('polls'));
-    // Lisätään votedBy-taulukko, johon tallennetaan äänestäneiden nimet
     polls.push({ 
         question, 
         options, 
@@ -105,21 +123,19 @@ function loadPolls() {
         pollDiv.style.padding = "15px";
         pollDiv.style.marginBottom = "10px";
 
-        // Tarkistetaan, onko käyttäjä jo äänestänyt tätä
         const hasVoted = poll.votedBy.includes(currentUser.username);
 
         let html = `<h4>${poll.question}</h4>`;
-        if (hasVoted) html += `<p style="color: green;"><i>Olet jo äänestänyt tätä.</i></p>`;
+        if (hasVoted) html += `<p style="color: green; font-size: 0.8em;"><i>Olet jo äänestänyt.</i></p>`;
 
         poll.options.forEach((option, optionIndex) => {
-            // Estetään painikkeen klikkaus, jos on jo äänestänyt
             const disabled = hasVoted ? "disabled" : "";
             html += `
                 <div style="margin-bottom: 5px;">
                     <button onclick="vote(${pollIndex}, ${optionIndex})" ${disabled}>
                         ${option.name}
                     </button>
-                    <span> Äänet: ${option.votes}</span>
+                    <span> ${option.votes} ääntä</span>
                 </div>
             `;
         });
@@ -128,8 +144,10 @@ function loadPolls() {
 
         if (currentUser.role === 'admin') {
             const delBtn = document.createElement('button');
-            delBtn.textContent = 'Poista';
+            delBtn.textContent = 'Poista äänestys';
             delBtn.style.backgroundColor = '#dc3545';
+            delBtn.style.color = 'white';
+            delBtn.style.marginTop = "10px";
             delBtn.onclick = () => deletePoll(pollIndex);
             pollDiv.appendChild(delBtn);
         }
@@ -143,13 +161,11 @@ function vote(pollIndex, optionIndex) {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const poll = polls[pollIndex];
 
-    // Varmistus: jos nimi löytyy jo listalta, keskeytetään
     if (poll.votedBy.includes(currentUser.username)) {
-        alert("Olet jo äänestänyt tässä kyselyssä!");
+        alert("Olet jo äänestänyt!");
         return;
     }
 
-    // Lisätään ääni ja tallennetaan käyttäjän nimi
     poll.options[optionIndex].votes++;
     poll.votedBy.push(currentUser.username);
 
@@ -159,10 +175,12 @@ function vote(pollIndex, optionIndex) {
 
 // --- POISTO JA ULOSKIRJAUS ---
 function deletePoll(index) {
-    let polls = JSON.parse(localStorage.getItem('polls'));
-    polls.splice(index, 1);
-    localStorage.setItem('polls', JSON.stringify(polls));
-    loadPolls();
+    if (confirm("Haluatko varmasti poistaa tämän äänestyksen?")) {
+        let polls = JSON.parse(localStorage.getItem('polls'));
+        polls.splice(index, 1);
+        localStorage.setItem('polls', JSON.stringify(polls));
+        loadPolls();
+    }
 }
 
 document.getElementById('logoutButton').addEventListener('click', function () {
@@ -171,4 +189,3 @@ document.getElementById('logoutButton').addEventListener('click', function () {
 });
 
 showLoginPage();
-
